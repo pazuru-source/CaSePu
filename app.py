@@ -50,12 +50,15 @@ with app.app_context():
     # Ensure any new columns exist in sqlite if table was created previously
     try:
         with db.engine.connect() as conn:
-            res = conn.exec_driver_sql("PRAGMA table_info(opportunities)").fetchall()
+            res = conn.exec_driver_sql(
+                "PRAGMA table_info(opportunities)").fetchall()
             cols = [r[1] for r in res]
             if 'current_price' not in cols:
-                conn.exec_driver_sql("ALTER TABLE opportunities ADD COLUMN current_price FLOAT")
+                conn.exec_driver_sql(
+                    "ALTER TABLE opportunities ADD COLUMN current_price FLOAT")
             if 'lower_band' not in cols:
-                conn.exec_driver_sql("ALTER TABLE opportunities ADD COLUMN lower_band FLOAT")
+                conn.exec_driver_sql(
+                    "ALTER TABLE opportunities ADD COLUMN lower_band FLOAT")
             conn.commit()
     except Exception as e:
         logger.warning(f"DB schema migration check: {e}")
@@ -188,7 +191,8 @@ def find_cash_secured_puts(ticker, target_date_str, current_price):
                 # Calculate days to expiry
                 try:
                     exp_dt = datetime.strptime(target_date_str, '%Y-%m-%d')
-                    days_to_expiry = (exp_dt.date() - datetime.now().date()).days
+                    days_to_expiry = (
+                        exp_dt.date() - datetime.now().date()).days
                 except Exception:
                     days_to_expiry = 7  # fallback to 1 week
 
